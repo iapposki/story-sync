@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Simple Form Page</title>
+</head>
+<body>
+
+  <h1>Book Matching App</h1>
+
+  <form id="myForm">
+    <label for="extraversion">Question 1: How introverted <===> extroverted are you?</label>
+    <br>
+    <input type="range" id="extraversion" name="extraversion" min="-2.59" max="2.19" step="0.01">
+
+    <br>
+    <br>
+
+    <label for="agreeableness">Question 2: How disagreeagble <===> agreeable are you?</label>
+    <br>
+    <input type="range" id="agreeableness" name="agreeableness" min="-0.99" max="0.85" step="0.01">
+
+    <br>
+    <br>
+
+    <label for="openness">Question 3: How traditional <===> open are you?</label>
+    <br>
+    <input type="range" id="openness" name="openness" min="-1.32" max="0.66" step="0.01">
+
+    <br>
+    <br>
+
+    <label for="neuroticism">Question 4: How levelheaded <===> neurotic are you?</label>
+    <br>
+    <input type="range" id="neuroticism" name="neuroticism" min="-5.38" max="1.41" step="0.01">
+
+    <br>
+    <br>
+
+    <label for="conscientiousness">Question 5: How tardy <===> conscientiousness are you?</label>
+    <br>
+    <input type="range" id="conscientiousness" name="conscientiousness" min="-0.69" max="1.19" step="0.01">
+
+    <br>
+
+    <input type="submit" value="Submit">
+  </form>
+
+  <div id="result"></div>
+
+  <script>
+    document.getElementById("myForm").addEventListener("submit", function (event) {
+      event.preventDefault();
+
+      // Get form data
+      var formData = new FormData(event.target);
+
+      // Convert form data to object
+      var data = {};
+      formData.forEach(function (value, key) {
+        data[key] = value;
+      });
+
+      // Convert object to query string
+      var queryString = Object.keys(data).map(function (key) {
+        return encodeURIComponent(key) + "=" + encodeURIComponent(data[key]);
+      }).join("&");
+
+      // Send data to the server
+      fetch("http://localhost:3001/postpersonality?" + queryString, {
+        method: "POST",
+        headers: {
+          "Content-type" : "application/json; charset=UTF-8"
+        }
+      })
+        .then(response => response.json())
+        .then(result => {
+          // Display the result on the page
+          document.getElementById("result").innerHTML = "Result: " + JSON.stringify(result);
+        })
+        .catch(error => {
+          console.error("Error:", error);
+        });
+    });
+  </script>
+
+</body>
+</html>
